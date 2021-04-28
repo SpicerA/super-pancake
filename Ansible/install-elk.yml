@@ -1,0 +1,47 @@
+---
+- name: ELK installation
+  hosts: elk
+  become: true
+  remote_user: azadmin
+  tasks:
+
+  - name: Increase virtual memory
+    sysctl:
+      name: vm.max_map_count
+      value: '262144'
+      state: present
+      reload: yes
+
+  - name: Install module called python3-pip
+    apt:
+      force_apt_get: yes
+      update_cache: yes
+      name: python3-pip
+      state: present
+
+  - name: Install module called docker.io
+    apt:
+      force_apt_get: yes
+      name: docker.io
+      state: present
+
+  - name: Install library called docker
+    pip:
+      name: docker
+      state: present
+
+  - name: Install docker container named sebp/elk:761
+    docker_container:
+      name: elk
+      image: sebp/elk:761
+      state: started
+      published_ports:
+        - 5601:5601
+        - 9200:9200
+        - 5044:5044
+      restart_policy: always
+
+  - name: Enable service docker on boot
+    systemd:
+      name: docker
+      enabled: yes

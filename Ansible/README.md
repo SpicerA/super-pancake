@@ -30,7 +30,7 @@ The main purpose of this network is to expose a load-balanced and monitored inst
 
 Load balancing ensures that the application will be highly available, in addition to restricting access to the network.
 
-Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the log files and system metrics.
+Integrating an ELK server allows users to easily monitor the vulnerable VMs for changes to the log files, as well as system metrics.
 
 The configuration details of each machine may be found below.
 
@@ -88,8 +88,8 @@ We have installed the following Beats on these machines:
 - Metricbeat  
 
 These Beats allow us to collect the following information from each machine:
-- _TODO: In 1-2 sentences, explain what kind of data each beat collects, and provide 1 example of what you expect to see. E.g., `Winlogbeat` collects Windows logs,
-- which we use to track user logon events, etc._
+- Changes and updates to any system logs are all delivered by Filebeat
+- System information, such as CPU utilization, Disk Space, Memory monitoring, and overall System Load is delivered by Metricbeat
 
 ### Using the Playbook
 In order to use the playbook, you will need to have an Ansible control node already configured. Assuming you have such a control node provisioned: 
@@ -98,15 +98,16 @@ SSH into the control node and follow the steps below:
 **For Filebeat**  
 - Copy the filebeat-config.yml (located [HERE](https://gist.githubusercontent.com/slape/5cc350109583af6cbe577bbcc0710c93/raw/eca603b72586fbe148c11f9c87bf96a63cb25760/Filebeat)) file to /etc/ansible/files/filebeat-config.yml.
 - Update the filebeat-config.yml file to include the private IP of the Elk-stack VM (in this case 10.1.0.4:9600) on line #1106, and the same private IP on line #1806 as the "host" for Kibana (10.1.0.4:5601)
-- Run filebeat-playbook.yml, and navigate to /etc/filebeat/ and locate filebeat.yml to check that the installation worked as expected.  
+- Run filebeat-playbook.yml, using the command `$ ansible-playbook filebeat-playbook.yml`  
+- Navigate to /etc/filebeat/ and locate filebeat.yml to check that the installation worked as expected.  
   
 **For Metricbeat**  
 - Copy the metricbeat-config.yml (located [HERE](https://gist.githubusercontent.com/slape/58541585cc1886d2e26cd8be557ce04c/raw/0ce2c7e744c54513616966affb5e9d96f5e12f73/metricbeat)) file to /etc/ansible/files/metricbeat-config.yml.
 - Update the metricbeat-config.yml file to include the private IP of the Elk-stack VM (in this case 10.1.0.4:9600), and the same private IP as the "host" for Kibana (10.1.0.4:5601)
-- Run metricbeat-playbookyml, and navigate to /etc/metricbeat/ and locate metricbeat.yml to check that the installation worked as expected.  
+- Run metricbeat-playbookyml, using the command `$ ansible-playbook metricbeat-playbook.yml`
+- Navigate to /etc/metricbeat/ and locate metricbeat.yml to check that the installation worked as expected.  
   
 **Post-install verification**  
 - Navigate to the folder /app/kibana on the public IP of the Elk-Stack VM via port 5601 (in this case, 40.80.156.24:5601/app/kibana)
-- Inside the Kibana web app, 
-
-_As a **Bonus**, provide the specific commands the user will need to run to download the playbook, update the files, etc._
+- **For Filebeat:** On the home page of the Kibana web app, click on the "Add log data" button, then the "System Logs" button.  This will lead you to a page with instructions of how to install Filebeat (which we have already done).  Scroll to the bottom, and click the "Check data" button under the "Module status" heading.  Once the green confirmation pops up, click on the "System logs dashboard" button to set up what logs you would like to see from Filebeat.  
+- **For Metricbeat:**  On the home page of the Kibana web app, click on the "Add metric data" button, then the "System metrics" button.  This will lead you to a page with instructions of how to install Metricbeat (which we have already done).  Scroll to the bottom, and click the "Check data" button under the "Module status" heading.  Once the green confirmation pops up, click on the "System logs dashboard" button to set up what logs you would like to see from Metricbeat.
